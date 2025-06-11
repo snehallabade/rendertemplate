@@ -12,14 +12,28 @@ export default defineConfig({
   build: {
     outDir: '../dist/public',
     emptyOutDir: true,
+    target: 'esnext',
+    rollupOptions: {
+      output: {
+        format: 'es',
+        generatedCode: {
+          constBindings: true
+        }
+      }
+    }
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
-    },
+    }
   },
   server: {
     host: true,
     port: 3000,
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext'
+    }
+  }
 });

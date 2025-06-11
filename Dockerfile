@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN npm run build:client && npm run build:server
 
 # Stage 2: Production environment
 FROM node:18-alpine AS production

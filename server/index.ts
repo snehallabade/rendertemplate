@@ -1,10 +1,15 @@
 import 'dotenv/config';
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import { resolvePublicPath, resolveClientPath } from './utils/paths';
-import path from 'path';
-import { createServer } from 'http';
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { registerRoutes } from './routes.js';
+import { setupVite, serveStatic, log } from './vite.js';
+import { resolvePublicPath, resolveClientPath } from './utils/paths.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
@@ -55,10 +60,17 @@ async function startServer() {
 
   // Register routes
   await registerRoutes(app);
-
   const port = process.env.PORT || 3000;
+  console.log('Starting server...');
+  console.log('Environment:', process.env.NODE_ENV);
+  console.log('Port:', port);
+  
   httpServer.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    console.log('API endpoints available at:');
+    console.log(`- Health check: http://localhost:${port}/api/health`);
+    console.log(`- Templates: http://localhost:${port}/api/templates`);
+    console.log(`- Documents: http://localhost:${port}/api/documents`);
   });
 
   return httpServer;

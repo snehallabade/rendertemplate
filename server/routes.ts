@@ -1,18 +1,23 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import templatesRouter from "./api/templates";
-import documentsRouter from "./api/documents";
+import { createServer, type Server } from "node:http";
+import { storage } from "./storage.js";
+import templatesRouter from "./api/templates.js";
+import documentsRouter from "./api/documents.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Register API routes
-  app.use('/api/templates', templatesRouter);
-  app.use('/api/documents', documentsRouter);
-
   // Health check endpoint
   app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV,
+      version: process.env.npm_package_version || '1.0.0'
+    });
   });
+
+  // API routes
+  app.use('/api/templates', templatesRouter);
+  app.use('/api/documents', documentsRouter);
 
   // Test database connection
   app.get('/api/test-db', async (req, res) => {

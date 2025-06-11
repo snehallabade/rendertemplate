@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "npx cross-env NODE_ENV=development tsx server/index.ts",
     "build:client": "vite build",
-    "build:server": "esbuild server/index.ts --bundle --platform=node --format=esm --outfile=dist/server/index.js --banner:js=\"import { createRequire } from 'module';const require = createRequire(import.meta.url);\" --external:express --external:dotenv --external:@supabase/supabase-js --external:drizzle-orm --external:lightningcss --external:@babel/* --external:class-variance-authority --external:clsx --external:cmdk --external:connect-pg-simple --external:docx --external:exceljs --external:express-session --external:framer-motion --external:input-otp --external:jsonwebtoken --external:jspdf --external:memorystore --external:multer --external:passport --external:passport-local --external:postgres --external:react --external:react-dom --external:recharts --external:ws --external:zod",
+    "build:server": "node build.esm.config.js",
     "build": "npm run build:client && npm run build:server",
-    "start": "cross-env NODE_ENV=production node dist/server/index.js",
+    "start": "cross-env NODE_ENV=production node dist/server/index.mjs",
     "check": "tsc",
     "db:push": "drizzle-kit push",
     "start-server": "npx tsx server/server-only.ts",
@@ -16,7 +16,7 @@
     "cli": "cross-env NODE_ENV=development tsx server/cli.ts"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

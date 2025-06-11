@@ -39,6 +39,24 @@ export async function setupVite(app: Express, server: Server) {
     },
     server: serverOptions,
     appType: "custom",
+    optimizeDeps: {
+      disabled: true
+    },
+    build: {
+      ...viteConfig.build,
+      commonjsOptions: {
+        transformMixedEsModules: true,
+        esmExternals: true
+      },
+      rollupOptions: {
+        output: {
+          format: 'es',
+          generatedCode: {
+            constBindings: true
+          }
+        }
+      }
+    }
   });
 
   app.use(vite.middlewares);
