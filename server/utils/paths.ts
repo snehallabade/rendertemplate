@@ -1,23 +1,18 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Get the directory name of the current module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '../../');
+import { projectRoot } from './initialize.js';
 
 export const resolveServerPath = (...parts: string[]) => {
-    return path.resolve(rootDir, 'server', ...parts);
+    return path.resolve(projectRoot, 'server', ...parts);
 };
 
 export const resolveClientPath = (...parts: string[]) => {
-    return path.resolve(rootDir, 'client', ...parts);
+    return path.resolve(projectRoot, 'client', ...parts);
 };
 
 export const resolvePublicPath = (...parts: string[]) => {
-    return path.resolve(rootDir, 'dist/public', ...parts);
+    return path.resolve(projectRoot, 'dist/public', ...parts);
 };
 
 export const resolveRootPath = (...parts: string[]) => {
-    return path.resolve(rootDir, ...parts);
+    return path.resolve(projectRoot, ...parts);
 };
