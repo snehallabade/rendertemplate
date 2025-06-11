@@ -2,10 +2,16 @@ import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { resolvePublicPath } from './utils/paths';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Serve static files from the public directory in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(resolvePublicPath()));
+}
 
 app.use((req, res, next) => {
   const start = Date.now();

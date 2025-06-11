@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - VITE_SUPABASE_URL=https://odrvrgtxnanquyeuiocx.supabase.co
+      - VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kcnZyZ3R4bmFucXV5ZXVpb2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxOTA4NjAsImV4cCI6MjA2NDc2Njg2MH0.Xv0JtsNIWk52SZ5JWpBkDamoXBQTAMrxx59b8eegqA4
+      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kcnZyZ3R4bmFucXV5ZXVpb2N4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTE5MDg2MCwiZXhwIjoyMDY0NzY2ODYwfQ.ysEl96G-lC0cNyJt_qBW36rJ49N-dRbvlVsMH8X93uI
+      - DATABASE_URL=postgresql://postgres.odrvrgtxnanquyeuiocx:1234@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+      - DIRECT_URL=postgresql://postgres.odrvrgtxnanquyeuiocx:1234@aws-0-ap-south-1.pooler.supabase.com:5432/postgres
+      - SUPABASE_JWT_SECRET=rg3lVOGJ5eV5ozj6K8u1epwL/Ig4SmnAnlMaRcdsfhYhlbweYT/2hHoKdsLj9q2rEylkcIGUK32rP/GKO5OlPQ==
+    volumes:
+      - .:/app
+      - /app/node_modules
