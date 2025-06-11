@@ -8,11 +8,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react(), runtimeErrorOverlay()],
-  root: 'client',
-  build: {
+  root: 'client',  build: {
     outDir: '../dist/public',
     emptyOutDir: true,
     target: 'esnext',
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
         format: 'es',

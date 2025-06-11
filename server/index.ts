@@ -17,15 +17,25 @@ async function startServer() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
-
   // Handle production mode
   if (process.env.NODE_ENV === 'production') {
     const publicPath = resolvePublicPath();
     app.use(express.static(publicPath));
     
     // Serve index.html for all routes to support client-side routing
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(publicPath, 'index.html'));
+    app.get('*', (req, res, next) => {
+      const indexPath = path.join(publicPath, 'index.html');
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error(`Error serving ${indexPath}:`, err);
+          console.log('Current directory:', __dirname);
+          console.log('Public path:', publicPath);
+          res.status(500).json({ 
+            error: 'Internal server error',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
+          });
+        }
+      });
     });
   } else {
     // Development mode with Vite

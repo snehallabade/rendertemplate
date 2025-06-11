@@ -1,11 +1,16 @@
-import express, { type Express } from "express";
-import fs from "fs";
-import path from "path";
+import express from "express";
+import type { Express } from "express";
 import { createServer as createViteServer, createLogger } from "vite";
-import { type Server } from "http";
-import viteConfig from "../vite.config";
+import type { Server } from "node:http";
+import { fileURLToPath } from 'node:url';
+import fs from "node:fs";
+import path from "node:path";
+import viteConfig from "../vite.config.js";
 import { nanoid } from "nanoid";
-import { resolveClientPath, resolvePublicPath } from './utils/paths';
+import { resolveClientPath, resolvePublicPath } from './utils/paths.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const viteLogger = createLogger();
 
@@ -24,7 +29,7 @@ export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
     hmr: { server },
-    allowedHosts: true,
+    allowedHosts: ['localhost', '127.0.0.1', '.render.com'],
   };
 
   const vite = await createViteServer({
@@ -88,9 +93,37 @@ export async function setupVite(app: Express, server: Server) {
 
 export async function serveStatic(app: Express): Promise<void> {
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(resolvePublicPath()));
-    app.get('*', (_req, res) => {
-      res.sendFile(resolvePublicPath('index.html'));
+    const publicPath = resolvePublicPath();
+    console.log('Serving static files from:', publicPath);
+    
+    // Serve static files with proper MIME types
+    app.use(express.static(publicPath, {
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, path) => {
+        if (path.endsWith('.js')) {
+          res.set('Content-Type', 'application/javascript');
+        } else if (path.endsWith('.css')) {
+          res.set('Content-Type', 'text/css');
+        }
+      }
+    }));
+
+    // Serve index.html for all non-API routes
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+
+      const indexPath = resolvePublicPath('index.html');
+      console.log('Serving index.html from:', indexPath);
+
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error('Error serving index.html:', err);
+          res.status(500).json({ error: 'Failed to serve application' });
+        }
+      });
     });
   }
 }

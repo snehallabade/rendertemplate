@@ -6,10 +6,18 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// In production, the server code is in dist/server/utils
+// In production, check for Render's directory structure first
 const projectRoot = process.env.NODE_ENV === 'production'
-    ? path.resolve(__dirname, '../../../')
+    ? process.env.RENDER === 'true'
+        ? '/opt/render/project'
+        : path.resolve(__dirname, '../../../')
     : path.resolve(__dirname, '../../');
+
+// Log the resolved paths in production for debugging
+if (process.env.NODE_ENV === 'production') {
+    console.log('Project root:', projectRoot);
+    console.log('Current directory:', __dirname);
+}
 
 export {
     __filename,
